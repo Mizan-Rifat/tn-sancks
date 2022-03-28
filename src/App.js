@@ -22,12 +22,31 @@ import SnackOrdersHistory from 'pages/admin/history/SnackOrdersHistory';
 import AuthProtectedRoute from 'components/auth/AuthProtectedRoute';
 import AdminProtectedRoute from 'components/auth/AdminProtectedRoute';
 import Register from 'pages/Register';
+import { getMessaging, getToken } from 'firebase/messaging';
 
 const App = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const messaging = getMessaging();
+    getToken(messaging, {
+      vapidKey:
+        'BKti4f30u4jwOX4ZiCkHHUAeLUu4Nhh7lYcNsKnShrA029KQCdDiOieSe8NbMXCo0nIpUwvEUc9S5QZ7V1nf8eQ'
+    })
+      .then(currentToken => {
+        if (currentToken) {
+          console.log({ currentToken });
+        } else {
+          console.log(
+            'No registration token available. Request permission to generate one.'
+          );
+        }
+      })
+      .catch(err => {
+        console.log('An error occurred while retrieving token. ', err);
+      });
+
     auth.onAuthStateChanged(async user => {
       let currentUser = null;
       if (user) {
@@ -44,7 +63,8 @@ const App = () => {
         <ConfirmationProvider>
           <CssBaseline />
           {!loading && (
-            <BrowserRouter basename="/tn-sancks">
+            <BrowserRouter>
+              {/* <BrowserRouter basename="/tn-sancks"> */}
               <Routes>
                 <Route path="/" element={<Layout />}>
                   <Route path="login" element={<Login />} />
