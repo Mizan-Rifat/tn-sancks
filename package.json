@@ -1,7 +1,7 @@
 {
   "name": "tn-snacks",
   "version": "2.1.0",
-  "homepage": "https://mizan-rifat.github.io/tn-sancks/",
+  "homepage": ".",
   "dependencies": {
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.8.1",
