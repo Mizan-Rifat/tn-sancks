@@ -44,7 +44,7 @@ const App = () => {
         <ConfirmationProvider>
           <CssBaseline />
           {!loading && (
-            <BrowserRouter basename="/tn-sancks">
+            <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Layout />}>
                   <Route path="login" element={<Login />} />
@@ -67,6 +67,7 @@ const App = () => {
 
                       <Route path="admin/items" element={<Items />} />
                       <Route path="admin/items/add" element={<PutItem />} />
+                      <Route path="admin/lunch-items" element={<Items />} />
                       <Route
                         path="admin/items/edit/:item"
                         element={<PutItem />}

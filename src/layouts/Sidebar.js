@@ -44,6 +44,11 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
               icon: <FastfoodIcon />
             },
             {
+              title: 'Lunch Items',
+              to: 'admin/lunch-items',
+              icon: <FastfoodIcon />
+            },
+            {
               title: 'Snack Orders History',
               to: '/orders/history',
               icon: <RestaurantMenuIcon />
