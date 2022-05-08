@@ -71,7 +71,8 @@ export const deleteSnacksItem = createAsyncThunk(
 export const snackItemsSlice = createSlice({
   name: 'snackItems',
   initialState: {
-    items: [],
+    snackItems: [],
+    lunchItems: [],
     item: {},
     fetching: false,
     loading: false
@@ -92,8 +93,11 @@ export const snackItemsSlice = createSlice({
     setFetchingFalse: state => {
       state.fetching = false;
     },
-    itemsfetched: (state, action) => {
-      state.items = action.payload;
+    itemsfetched: (state, { payload }) => {
+      const snackItems = payload.filter(item => item.type === 'snack');
+      const lunchItems = payload.filter(item => item.type === 'lunch');
+      state.snackItems = snackItems;
+      state.lunchItems = lunchItems;
       state.fetching = false;
       state.loading = false;
     }

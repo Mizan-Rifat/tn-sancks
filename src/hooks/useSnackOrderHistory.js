@@ -21,10 +21,10 @@ const useSnackOrdersHistory = () => {
         };
       });
 
-      const currentUserOrders = orders.filter(
+      const currentUserSnackOrders = orders.filter(
         item => item.userId === currentUser.id
       );
-      dispatch(setCurrentUserCompletedSnackOrders(currentUserOrders));
+      dispatch(setCurrentUserCompletedSnackOrders(currentUserSnackOrders));
       dispatch(setCompletedSnackOrders(orders));
     });
   }, []);

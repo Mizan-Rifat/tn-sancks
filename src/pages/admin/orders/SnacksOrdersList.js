@@ -32,7 +32,7 @@ const getSumOfOrders = data => {
     name: item
   }));
 };
-const OrderList = () => {
+const SnacksOrderList = () => {
   const [groupedUserOrders, setGroupedUserOrders] = useState({});
   const { snackOrder, userOrders } = useSelector(state => state.snackOrders);
   const { handleDeleteOrder } = useOrdersHook();
@@ -185,4 +185,4 @@ const OrderList = () => {
   );
 };
 
-export default OrderList;
+export default SnacksOrderList;

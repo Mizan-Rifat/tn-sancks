@@ -6,10 +6,9 @@ import Layout from 'layouts/Layout';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from 'pages/main/home/Home';
 import AdminHome from 'pages/admin/home/AdminHome';
-import Orders from 'pages/admin/orders/OrdersList';
+import Orders from 'pages/admin/orders/Orders';
 import ConfirmationProvider from 'providers/ConfirmationProvider';
 
-import Items from 'pages/admin/items/Items';
 import PutItem from 'pages/admin/items/PutItem';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,6 +21,8 @@ import SnackOrdersHistory from 'pages/admin/history/SnackOrdersHistory';
 import AuthProtectedRoute from 'components/auth/AuthProtectedRoute';
 import AdminProtectedRoute from 'components/auth/AdminProtectedRoute';
 import Register from 'pages/Register';
+import SnackItems from 'pages/admin/items/SnackItems';
+import LunchItems from 'pages/admin/items/LunchItems';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -65,11 +66,29 @@ const App = () => {
                       <Route path="admin/users" element={<Users />} />
                       <Route path="admin/orders" element={<Orders />} />
 
-                      <Route path="admin/items" element={<Items />} />
-                      <Route path="admin/items/add" element={<PutItem />} />
                       <Route
-                        path="admin/items/edit/:item"
+                        path="admin/snack-items"
+                        element={<SnackItems />}
+                      />
+                      <Route
+                        path="admin/lunch-items"
+                        element={<LunchItems />}
+                      />
+                      <Route
+                        path="admin/snack-items/add"
                         element={<PutItem />}
+                      />
+                      <Route
+                        path="admin/lunch-items/add"
+                        element={<PutItem isLunch={true} />}
+                      />
+                      <Route
+                        path="admin/snack-items/edit/:item"
+                        element={<PutItem />}
+                      />
+                      <Route
+                        path="admin/lunch-items/edit/:item"
+                        element={<PutItem isLunch={true} />}
                       />
                     </Route>
                   </Route>

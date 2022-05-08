@@ -19,7 +19,7 @@ const AddItemDialog = ({ open, setOpen }) => {
   const [selectedItem, setSelectedItem] = useState({});
   const [qty, setQty] = useState(0);
 
-  const { items } = useSelector(state => state.snackItems);
+  const { snackItems } = useSelector(state => state.snackItems);
   const { currentUser } = useSelector(state => state.users);
   const dispatch = useDispatch();
 
@@ -56,7 +56,7 @@ const AddItemDialog = ({ open, setOpen }) => {
             label="Item"
             onChange={handleChange}
           >
-            {items.map(item => (
+            {snackItems.map(item => (
               <MenuItem key={item.id} value={item}>
                 {item.name}
               </MenuItem>

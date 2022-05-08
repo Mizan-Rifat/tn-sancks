@@ -1,4 +1,12 @@
-import { Button, Stack, TextField } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField
+} from '@mui/material';
 import AppBackdrop from 'components/backdrop/AppBackdrop';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -11,7 +19,7 @@ import {
   updateSnacksItem
 } from 'redux/slices/snackItemsSlice';
 
-const PutItem = () => {
+const PutItem = ({ isLunch }) => {
   const { item: itemId } = useParams();
   const navigate = useNavigate();
 
@@ -27,11 +35,13 @@ const PutItem = () => {
 
   const dispatch = useDispatch();
   const onSubmit = async formData => {
+    console.log({ formData });
     if (itemId) {
       await dispatch(updateSnacksItem({ itemId, formData })).unwrap();
-      navigate('/admin/items');
+      navigate(-1);
     } else {
       dispatch(addSnacksItem({ formData, reset }));
+      navigate(-1);
     }
   };
   useEffect(() => {
@@ -46,6 +56,7 @@ const PutItem = () => {
   useEffect(() => {
     setValue('name', item.name);
     setValue('price', item.price);
+    setValue('type', isLunch ? 'lunch' : 'snack');
   }, [item]);
 
   return (
@@ -71,8 +82,9 @@ const PutItem = () => {
                 helperText={errors.price?.message}
                 {...register('price', { required: 'This field is required' })}
               />
+
               <Button type="submit">{itemId ? 'Update' : 'Add'}</Button>
-              <Button variant="outlined" component={Link} to="/admin/items">
+              <Button variant="outlined" onClick={() => navigate(-1)}>
                 Go to back
               </Button>
             </Stack>

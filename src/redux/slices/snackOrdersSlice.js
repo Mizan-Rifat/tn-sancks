@@ -117,10 +117,13 @@ export const snackOrdersSlice = createSlice({
   name: 'snackOrder',
   initialState: {
     snackOrder: null,
+    lunchOrder: null,
     completedSnackOrders: [],
     currentUserCompletedSnackOrders: [],
-    userOrders: [],
-    currentUserOrders: [],
+    userSnackOrders: [],
+    userLunchOrders: [],
+    currentUserSnackOrders: [],
+    currentUserLunchOrders: [],
     loading: true
   },
   reducers: {
@@ -130,24 +133,34 @@ export const snackOrdersSlice = createSlice({
     setLoadingFalse: state => {
       state.loading = false;
     },
-    snackOrdersFetched: (state, action) => {
-      state.snackOrder = action.payload;
+    ordersFetched: (state, { payload }) => {
+      state.snackOrder = payload.filter(item => item.type === 'snack')[0];
+      state.lunchOrder = payload.filter(item => item.type === 'lunch')[0];
       state.loading = false;
     },
     setCompletedSnackOrders: (state, action) => {
       state.completedSnackOrders = action.payload;
       state.loading = false;
     },
-    setCurrentUserCompletedSnackOrders: (state, action) => {
-      state.currentUserCompletedSnackOrders = action.payload;
+    setCurrentUserCompletedSnackOrders: (state, { payload }) => {
+      state.currentUserCompletedSnackOrders = payload;
       state.loading = false;
+    },
+    setOrders: (state, { payload }) => {
+      if (payload.type === 'snack') {
+        state.userSnackOrders = payload.orderItems;
+        state.currentUserSnackOrders = payload.currentUserSnackOrders;
+      } else {
+        state.userLunchOrders = payload.orderItems;
+        state.currentUserLunchOrders = payload.currentUserSnackOrders;
+      }
     },
     setUserOrders: (state, action) => {
       state.userOrders = action.payload;
       state.loading = false;
     },
     setCurrentUserOrders: (state, action) => {
-      state.currentUserOrders = action.payload;
+      state.currentUserSnackOrders = action.payload;
       state.loading = false;
     }
   },
@@ -164,8 +177,9 @@ export const snackOrdersSlice = createSlice({
 
 export const {
   setLoadingTrue,
-  snackOrdersFetched,
+  ordersFetched,
   setUserOrders,
+  setOrders,
   setCurrentUserOrders,
   setCompletedSnackOrders,
   setCurrentUserCompletedSnackOrders

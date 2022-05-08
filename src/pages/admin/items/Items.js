@@ -23,37 +23,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import AppBackdrop from 'components/backdrop/AppBackdrop';
 import { Link } from 'react-router-dom';
 
-export default function Items() {
-  const itemsRef = collection(db, 'snackItems');
-
-  const { items, fetching } = useSelector(state => state.snackItems);
-  const dispatch = useDispatch();
+export default function Items({ items, handleDelete, loading, lunch }) {
   const confirm = useConfirmation();
-  const handleDelete = async id => {
+  const onDeleteClick = async id => {
     try {
       await confirm({
         variant: 'error',
         description: 'Are you sure you want to cancel this order?'
       });
-      dispatch(deleteSnacksItem(id));
+      handleDelete(id);
     } catch (error) {
       console.log('no');
     }
   };
 
-  useEffect(() => {
-    if (!items.length) {
-      dispatch(setFetchingTrue());
-      onSnapshot(itemsRef, snapshot => {
-        const items = snapshot.docs.map(doc => getFsData(doc));
-        dispatch(itemsfetched(items));
-      });
-    }
-  }, []);
-
   return (
     <>
-      <AppBackdrop open={fetching} />
+      <AppBackdrop open={loading} />
       <TableContainer component={Paper}>
         <Table size="small" aria-label="spanning table">
           <TableHead>
@@ -76,14 +62,16 @@ export default function Items() {
                     aria-label="delete"
                     size="small"
                     component={Link}
-                    to={`edit/${row.id}`}
+                    to={`/admin/${lunch ? 'lunch-items' : 'snack-items'}/edit/${
+                      row.id
+                    }`}
                   >
                     <Edit fontSize="small" />
                   </IconButton>
                   <IconButton
                     aria-label="delete"
                     size="small"
-                    onClick={() => handleDelete(row.id)}
+                    onClick={() => onDeleteClick(row.id)}
                   >
                     <Delete fontSize="small" />
                   </IconButton>
@@ -94,7 +82,12 @@ export default function Items() {
         </Table>
       </TableContainer>
       <Box sx={{ textAlign: 'center', my: 3 }}>
-        <Button component={Link} to="add" variant="contained" color="primary">
+        <Button
+          component={Link}
+          to={`/admin/${lunch ? 'lunch-items' : 'snack-items'}/add`}
+          variant="contained"
+          color="primary"
+        >
           Add item
         </Button>
       </Box>

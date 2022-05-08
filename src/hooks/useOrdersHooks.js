@@ -9,10 +9,11 @@ import {
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { getFsData } from 'utils';
 import {
-  snackOrdersFetched,
+  ordersFetched,
   setUserOrders,
   deleteUserSnackOrder,
-  setCurrentUserOrders
+  setCurrentUserOrders,
+  setOrders
 } from 'redux/slices/snackOrdersSlice';
 import { usersfetched } from 'redux/slices/usersSlice';
 
@@ -26,7 +27,7 @@ const useOrdersHook = () => {
 
   const confirm = useConfirmation();
 
-  const { items } = useSelector(state => state.snackItems);
+  const { snackItems, lunchItems } = useSelector(state => state.snackItems);
   const { users, currentUser } = useSelector(state => state.users);
 
   const dispatch = useDispatch();
@@ -49,32 +50,60 @@ const useOrdersHook = () => {
     onSnapshot(snackOrderQ, snapshot => {
       const orders = snapshot.docs.map(doc => getFsData(doc));
 
-      dispatch(snackOrdersFetched(orders[0]));
+      // console.log({ orders });
+
+      const orderItems = orders.map(order => {
+        if (order.type === 'lunch') {
+          return {
+            ...order,
+            items: order.items.map(item =>
+              lunchItems.find(lunchItem => lunchItem.id === item)
+            )
+          };
+        }
+        return order;
+      });
+
+      console.log({ orders, orderItems });
+
+      // dispatch(ordersFetched({ snackOrder, lunchOrder }));
+      dispatch(ordersFetched(orderItems));
 
       if (orders.length > 0) {
-        const userOrdersRef = collection(
-          db,
-          `/snackOrders/${orders[0].id}/userOrders`
-        );
-        onSnapshot(userOrdersRef, snapshot => {
-          const uOrders = snapshot.docs.map(doc => getFsData(doc));
-
-          const orderItems = uOrders.map(order => ({
-            user: users.find(user => user.id === order.uid)?.name,
-            ...items.find(item => item.id === order.itemId),
-
-            ...order
-          }));
-          const currentUserOrders = orderItems.filter(
-            item => item.uid === currentUser.id
+        orders.map(order => {
+          const userOrdersRef = collection(
+            db,
+            `/snackOrders/${order.id}/userOrders`
           );
-          dispatch(setUserOrders(orderItems));
-          dispatch(setCurrentUserOrders(currentUserOrders));
+          onSnapshot(userOrdersRef, snapshot => {
+            const uOrders = snapshot.docs.map(doc => getFsData(doc));
+            // console.log({ uOrders });
+
+            const orderItems = uOrders.map(uOrder => ({
+              user: users.find(user => user.id === uOrder.uid)?.name,
+              ...(order.type === 'lunch' ? lunchItems : snackItems).find(
+                item => item.id === uOrder.itemId
+              ),
+              ...uOrder
+            }));
+            // console.log({ type: order.type, orderItems });
+
+            const currentUserSnackOrders = orderItems.filter(
+              item => item.uid === currentUser.id
+            );
+            dispatch(
+              setOrders({
+                orderItems,
+                currentUserSnackOrders,
+                type: order.type === 'snack' ? 'snack' : 'lunch'
+              })
+            );
+          });
         });
       }
     });
 
-    if (!items.length) {
+    if (!snackItems.length) {
       dispatch(setSnacksItemsLoadingTrue());
       onSnapshot(itemsRef, snapshot => {
         const items = snapshot.docs.map(doc => getFsData(doc));
@@ -88,7 +117,7 @@ const useOrdersHook = () => {
         dispatch(usersfetched(users));
       });
     }
-  }, [items, users]);
+  }, [snackItems, users]);
 
   return {
     getTotalPrice,

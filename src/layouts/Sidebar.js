@@ -40,7 +40,12 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
             },
             {
               title: 'Snack Items',
-              to: 'admin/items',
+              to: 'admin/snack-items',
+              icon: <FastfoodIcon />
+            },
+            {
+              title: 'Lunch Items',
+              to: 'admin/lunch-items',
               icon: <FastfoodIcon />
             },
             {

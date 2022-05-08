@@ -11,76 +11,23 @@ import { useSelector } from 'react-redux';
 import AddItemDialog from './AddItemDialog';
 import useOrdersHook from 'hooks/useOrdersHooks';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import TabLayout from 'layouts/TabLayout';
+import SnacksList from './SnacksList';
+import LunchList from './LunchList';
 
 const getTotalPrice = items =>
   items.reduce((acc, val) => acc + Number(val.qty * val.price), 0);
 
 const Home = () => {
   const [open, setOpen] = useState();
-  const { currentUserOrders } = useSelector(state => state.snackOrders);
+  const { currentUserSnackOrders } = useSelector(state => state.snackOrders);
 
   const { snackOrder } = useSelector(state => state.snackOrders);
 
   const { handleDeleteOrder } = useOrdersHook();
 
-  return snackOrder ? (
-    <>
-      <TableContainer>
-        <Table size="small">
-          <TableBody>
-            {currentUserOrders.map(row => (
-              <TableRow key={row.itemId}>
-                <TableCell>
-                  {row.name} ({row.qty})
-                </TableCell>
-                <TableCell>{row.price * row.qty} /-</TableCell>
-                <TableCell align="right">
-                  <IconButton
-                    aria-label="delete"
-                    size="small"
-                    onClick={() => handleDeleteOrder(row.id)}
-                    disabled={!snackOrder.open}
-                  >
-                    <CancelIcon fontSize="small" />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-
-            <TableRow>
-              <TableCell>Total</TableCell>
-              <TableCell>{getTotalPrice(currentUserOrders)} /-</TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Box sx={{ textAlign: 'center', my: 3 }}>
-        {!snackOrder.open && <h3>Order request is closed now.</h3>}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setOpen(true)}
-          disabled={!snackOrder.open}
-        >
-          Add Item
-        </Button>
-      </Box>
-      <AddItemDialog open={open} setOpen={setOpen} />
-    </>
-  ) : (
-    <Box
-      sx={{
-        minHeight: 300,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column'
-      }}
-    >
-      <SentimentVeryDissatisfiedIcon />
-      <h3>No order request is available right now</h3>
-    </Box>
+  return (
+    <TabLayout snackComponent={<SnacksList />} lunchComponent={<LunchList />} />
   );
 };
 
