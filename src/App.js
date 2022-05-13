@@ -22,6 +22,7 @@ import SnackOrdersHistory from 'pages/admin/history/SnackOrdersHistory';
 import AuthProtectedRoute from 'components/auth/AuthProtectedRoute';
 import AdminProtectedRoute from 'components/auth/AdminProtectedRoute';
 import Register from 'pages/Register';
+import Test from 'Test';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -48,6 +49,7 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Layout />}>
                   <Route path="login" element={<Login />} />
+                  <Route path="test" element={<Test />} />
                   <Route path="register" element={<Register />} />
                   <Route element={<AuthProtectedRoute />}>
                     <Route index element={<Home />} />

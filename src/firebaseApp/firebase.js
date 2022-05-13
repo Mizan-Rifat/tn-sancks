@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-
+import { getMessaging, getToken } from 'firebase/messaging';
 //live
 const firebaseConfig = {
   apiKey: 'AIzaSyD0j4pHa5i6pbPL2QpSSUo3peTGLNMsxzw',
@@ -27,3 +27,21 @@ export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const currentUser = auth.currentUser;
+
+export const askForPermissionToReceiveNotifications = async () => {
+  try {
+    const messaging = getMessaging();
+    console.log({ messaging });
+    await messaging.requestPermission();
+    const token = await getToken().catch(err => {
+      console.log(
+        'No registration token available. Request permission to generate one.'
+      );
+    });
+    console.log('Your token is:', token);
+
+    return token;
+  } catch (error) {
+    console.error(error);
+  }
+};
