@@ -11,39 +11,38 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
-  addSnacksItem,
-  fetchSnacksItem,
+  addItem,
+  fetchItem,
   resetItem,
-  updateSnacksItem
-} from 'redux/slices/snackItemsSlice';
+  updateItem
+} from 'redux/slices/itemsSlice';
 
 const PutItem = () => {
   const { item: itemId } = useParams();
   const navigate = useNavigate();
 
-  const { item, loading } = useSelector(state => state.snackItems);
+  const { item, fetching, loading } = useSelector(state => state.items);
 
   const {
     register,
     setValue,
     handleSubmit,
-    reset,
     formState: { errors }
   } = useForm();
 
   const dispatch = useDispatch();
   const onSubmit = async formData => {
     if (itemId) {
-      await dispatch(updateSnacksItem({ itemId, formData })).unwrap();
+      await dispatch(updateItem({ itemId, formData })).unwrap();
       navigate('/admin/items');
     } else {
-      await dispatch(addSnacksItem({ formData, reset }));
+      await dispatch(addItem({ formData }));
       navigate('/admin/items');
     }
   };
   useEffect(() => {
     if (itemId) {
-      dispatch(fetchSnacksItem(itemId));
+      dispatch(fetchItem(itemId));
     }
 
     return () => {
@@ -59,8 +58,8 @@ const PutItem = () => {
 
   return (
     <>
-      <AppBackdrop open={loading} />
-      {!loading && (
+      <AppBackdrop open={loading || fetching} />
+      {!fetching && (
         <>
           <h2>{itemId ? 'Update' : 'Add'} item</h2>
           <form onSubmit={handleSubmit(onSubmit)}>

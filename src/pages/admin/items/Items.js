@@ -11,22 +11,13 @@ import { useConfirmation } from 'providers/ConfirmationProvider';
 import { Box } from '@mui/system';
 import { Button } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
-import { collection, onSnapshot } from 'firebase/firestore';
-import { db } from 'firebaseApp/firebase';
-import { getFsData } from 'utils';
-import {
-  deleteSnacksItem,
-  itemsfetched,
-  setFetchingTrue
-} from 'redux/slices/snackItemsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AppBackdrop from 'components/backdrop/AppBackdrop';
 import { Link } from 'react-router-dom';
+import { deleteItem, fetchItems } from 'redux/slices/itemsSlice';
 
 export default function Items() {
-  const itemsRef = collection(db, 'snackItems');
-
-  const { items, fetching } = useSelector(state => state.snackItems);
+  const { items, fetching, loading } = useSelector(state => state.items);
   const dispatch = useDispatch();
   const confirm = useConfirmation();
   const handleDelete = async id => {
@@ -35,7 +26,7 @@ export default function Items() {
         variant: 'error',
         description: 'Are you sure you want to cancel this order?'
       });
-      dispatch(deleteSnacksItem(id));
+      dispatch(deleteItem(id));
     } catch (error) {
       console.log('no');
     }
@@ -43,17 +34,13 @@ export default function Items() {
 
   useEffect(() => {
     if (!items.length) {
-      dispatch(setFetchingTrue());
-      onSnapshot(itemsRef, snapshot => {
-        const items = snapshot.docs.map(doc => getFsData(doc));
-        dispatch(itemsfetched(items));
-      });
+      dispatch(fetchItems());
     }
   }, []);
 
   return (
     <>
-      <AppBackdrop open={fetching} />
+      <AppBackdrop open={fetching || loading} />
       <TableContainer component={Paper}>
         <Table size="small" aria-label="spanning table">
           <TableHead>
