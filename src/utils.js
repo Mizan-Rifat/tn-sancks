@@ -22,10 +22,13 @@ export const formatDate = (date, showYears) => {
 export const getTotal = (arr, field) =>
   arr.reduce((acc, val) => acc + val[field], 0);
 
-export const getParseObject = object => ({
-  id: object.id,
-  ...object.attributes
-});
+export const getParseObject = object =>
+  object
+    ? {
+        id: object.id,
+        ...object.attributes
+      }
+    : object;
 export const getParseObjects = objects =>
   objects.map(object => getParseObject(object));
 

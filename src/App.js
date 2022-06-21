@@ -15,7 +15,7 @@ import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Users from 'pages/admin/users/Users';
 import { auth } from 'firebaseApp/firebase';
-import { fetchUser, setCurrentUser } from 'redux/slices/usersSlice';
+import { setCurrentUser } from 'redux/slices/usersSlice';
 import { useDispatch } from 'react-redux';
 import Login from 'pages/Login';
 import SnackOrdersHistory from 'pages/admin/history/SnackOrdersHistory';
@@ -23,20 +23,21 @@ import AuthProtectedRoute from 'components/auth/AuthProtectedRoute';
 import AdminProtectedRoute from 'components/auth/AdminProtectedRoute';
 import Register from 'pages/Register';
 import Test from 'Test';
+import Parse from 'parse';
+import { getParseObject } from 'utils';
+import { fetchOrderRequests } from 'redux/slices/orderRequestsSlice';
 
 const App = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    auth.onAuthStateChanged(async user => {
-      let currentUser = null;
-      if (user) {
-        currentUser = await dispatch(fetchUser(user?.uid)).unwrap();
-      }
-      dispatch(setCurrentUser(currentUser));
-      setLoading(false);
-    });
+    const currentUser = Parse.User.current();
+    dispatch(setCurrentUser(getParseObject(currentUser)));
+    console.log({ currentUser });
+
+    console.log('fetching orderReq');
+    dispatch(fetchOrderRequests());
   }, []);
 
   return (

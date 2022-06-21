@@ -7,7 +7,6 @@ import Parse from 'parse';
 export const fetchItems = createAsyncThunk(
   'items/items/fetch',
   async (_, { rejectWithValue, dispatch }) => {
-    console.log({ itemsSlice });
     const itemsQuery = new Parse.Query('Items');
     const subscription = await itemsQuery.subscribe();
 
@@ -20,9 +19,7 @@ export const fetchItems = createAsyncThunk(
 
     try {
       const res = await itemsQuery.find();
-      console.log({ res });
       const items = getParseObjects(res);
-      console.log({ items });
       return items;
     } catch (error) {
       return rejectWithValue(error);

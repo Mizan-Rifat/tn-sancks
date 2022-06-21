@@ -8,13 +8,9 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import { Edit } from '@mui/icons-material';
-import { collection, onSnapshot } from 'firebase/firestore';
-import { db } from 'firebaseApp/firebase';
-import { getFsData } from 'utils';
-import { setLoadingTrue, usersfetched } from 'redux/slices/usersSlice';
+import { fetchUsers } from 'redux/slices/usersSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import AppBackdrop from 'components/backdrop/AppBackdrop';
-import useSnackOrdersHistory from 'hooks/useSnackOrderHistory';
 import EditDepositDialog from './EditDepositDialog';
 
 export const getDebit = (user, orders) =>
@@ -23,52 +19,39 @@ export const getDebit = (user, orders) =>
     .reduce((acc, val) => val.totalPrice + acc, 0);
 
 const Users = () => {
-  const usersRef = collection(db, 'users');
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [toralCredits, setTotalCredits] = useState(0);
 
-  const { users, loading } = useSelector(state => state.users);
-  const { completedSnackOrders, loading: snackOrdersLoading } = useSelector(
-    state => state.snackOrders
-  );
+  const { users, fetching, loading } = useSelector(state => state.users);
 
-  useSnackOrdersHistory();
+  // useSnackOrdersHistory();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const total = users
-      .filter(user => user.deposit)
-      .reduce(
-        (acc, val) =>
-          acc + (val.deposit - getDebit(val.id, completedSnackOrders)),
-        0
-      );
-    setTotalCredits(total);
-  }, [completedSnackOrders, users]);
-
-  useEffect(() => {
     if (!users.length) {
-      dispatch(setLoadingTrue());
-      onSnapshot(usersRef, snapshot => {
-        const users = snapshot.docs.map(doc => getFsData(doc));
-        dispatch(usersfetched(users));
-      });
+      dispatch(fetchUsers());
     }
   }, []);
 
+  useEffect(() => {
+    const total = users.reduce(
+      (acc, user) => Number(user.credit) + Number(acc),
+      0
+    );
+    setTotalCredits(total);
+  }, [users]);
+
   return (
     <>
-      <AppBackdrop open={loading || snackOrdersLoading} />
+      <AppBackdrop open={fetching} />
       <TableContainer component={Paper}>
         <Table size="small" aria-label="spanning table">
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell align="center">Deposit</TableCell>
-              <TableCell align="right">Debit</TableCell>
-              <TableCell align="right">Credit</TableCell>
+              <TableCell align="center">Credit</TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>
@@ -78,15 +61,7 @@ const Users = () => {
               <TableRow key={row.id}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{row.name}</TableCell>
-                <TableCell align="center">{row.deposit || 0} /-</TableCell>
-                <TableCell align="center">
-                  {getDebit(row.id, completedSnackOrders) || 0} /-
-                </TableCell>
-                <TableCell align="center">
-                  {(row.deposit || 0) -
-                    getDebit(row.id, completedSnackOrders) || 0}{' '}
-                  /-
-                </TableCell>
+                <TableCell align="center">{row.credit} /-</TableCell>
                 <TableCell align="right">
                   <IconButton
                     aria-label="delete"
@@ -102,10 +77,12 @@ const Users = () => {
               </TableRow>
             ))}
             <TableRow>
-              <TableCell colSpan={4} align="center">
-                Total
+              <TableCell colSpan={2} align="center">
+                Total :
               </TableCell>
-              <TableCell colSpan={2}>{toralCredits} /-</TableCell>
+              <TableCell colSpan={1} align="center">
+                {toralCredits} /-
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>

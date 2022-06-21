@@ -124,13 +124,7 @@ export const snackItemsSlice = createSlice({
       })
       .addCase(deleteSnacksItem.fulfilled, state => {
         state.loading = false;
-      })
-      .addMatcher(
-        action => action.type.endsWith('/rejected'),
-        (state, action) => {
-          console.log({ state, action });
-        }
-      );
+      });
   }
 });
 

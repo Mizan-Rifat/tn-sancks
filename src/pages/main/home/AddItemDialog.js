@@ -19,11 +19,9 @@ const AddItemDialog = ({ open, setOpen }) => {
   const [selectedItem, setSelectedItem] = useState({});
   const [qty, setQty] = useState(0);
 
-  const { items } = useSelector(state => state.snackItems);
+  const { items } = useSelector(state => state.items);
   const [seletcAbleItems, setSeletcAbleItems] = useState([]);
-  const { currentUserOrders, snackOrder } = useSelector(
-    state => state.snackOrders
-  );
+  const { snackRequest } = useSelector(state => state.orderRequests);
   const { currentUser } = useSelector(state => state.users);
   const dispatch = useDispatch();
 
@@ -51,17 +49,17 @@ const AddItemDialog = ({ open, setOpen }) => {
   };
 
   useEffect(() => {
-    if (snackOrder.categories?.length === 3) {
+    if (snackRequest.categories?.length === 3) {
       setSeletcAbleItems(
-        items.filter(item => snackOrder.categories.includes(item.category))
+        items.filter(item => snackRequest.categories.includes(item.category))
       );
     } else {
       setSeletcAbleItems(items);
     }
-  }, [snackOrder, items]);
+  }, [snackRequest, items]);
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={!!open} onClose={handleClose}>
       <DialogTitle>Select item</DialogTitle>
       <DialogContent sx={{ minWidth: 300 }}>
         <FormControl margin="dense" fullWidth sx={{ mt: 1, mb: 2 }}>
@@ -75,10 +73,10 @@ const AddItemDialog = ({ open, setOpen }) => {
           >
             {seletcAbleItems
               .filter(item => !item.disable)
-              .filter(
-                item =>
-                  !currentUserOrders.some(order => order.itemId === item.id)
-              )
+              // .filter(
+              //   item =>
+              //     !currentUserOrders.some(order => order.itemId === item.id)
+              // )
               .map(item => (
                 <MenuItem key={item.id} value={item}>
                   {item.name}

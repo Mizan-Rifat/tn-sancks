@@ -10,12 +10,8 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import IconButton from '@mui/material/IconButton';
 import { Box } from '@mui/system';
 import { Button, Divider, Stack } from '@mui/material';
-import useOrdersHook from 'hooks/useOrdersHooks';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  completeSnackOrders,
-  updateSnackOrder
-} from 'redux/slices/snackOrdersSlice';
+import { updateSnackOrder } from 'redux/slices/snackOrdersSlice';
 import { Navigate } from 'react-router-dom';
 import { formatDate, getTotal, groupBy } from 'utils';
 import { useConfirmation } from 'providers/ConfirmationProvider';
@@ -35,7 +31,7 @@ const getSumOfOrders = data => {
 const OrderList = () => {
   const [groupedUserOrders, setGroupedUserOrders] = useState({});
   const { snackOrder, userOrders } = useSelector(state => state.snackOrders);
-  const { handleDeleteOrder } = useOrdersHook();
+  // const { handleDeleteOrder } = useOrdersHook();
 
   const confirm = useConfirmation();
 
@@ -57,8 +53,6 @@ const OrderList = () => {
         userName: order.user,
         userId: order.uid
       }));
-
-      await dispatch(completeSnackOrders(data)).unwarp();
     } catch (error) {
       console.log('no');
     }
@@ -88,7 +82,7 @@ const OrderList = () => {
     setGroupedUserOrders(groupBy(userOrders, 'uid'));
   }, [userOrders]);
 
-  return snackOrder ? (
+  return true ? (
     <>
       <Box sx={{ textAlign: 'center', mb: 3 }}>
         <h3>{formatDate(snackOrder.date, true)}</h3>

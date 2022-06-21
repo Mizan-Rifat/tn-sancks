@@ -10,45 +10,42 @@ import {
 } from 'firebase/firestore';
 import { db } from 'firebaseApp/firebase';
 import { toast } from 'react-toastify';
+import Parse from 'parse';
+import { onSubscribe } from 'utils';
 
 const snackOrdersRef = collection(db, 'snackOrders');
 const completedSnackOrdersRef = collection(db, 'completedSnackOrders');
 const getSnackUsersOrderRef = orderId => `/snackOrders/${orderId}/userOrders`;
 
-export const completeSnackOrders = createAsyncThunk(
-  'sanck_orders/complete_order',
-  async (orders, { getState }) => {
-    try {
-      orders.forEach(async order => {
-        await addDoc(completedSnackOrdersRef, order);
-      });
-      const docRef = doc(
-        db,
-        'snackOrders',
-        getState().snackOrders.snackOrder.id
-      );
-      await updateDoc(docRef, { status: false });
-    } catch (error) {
-      console.log({ error });
-    }
-  }
-);
+export const fetchCurrentSnackOrders = createAsyncThunk(
+  'snackOrders/currentSnackOrders/fetch',
+  async (_, { rejectWithValue, dispatch, getState }) => {
+    const ordersQuery = new Parse.Query('SnackOrders');
+    ordersQuery.include('item', 'user');
+    const orders = await ordersQuery.find().catch(err => {
+      console.log({ err });
+    });
+    console.log({ orders });
+    const subscription = await ordersQuery.subscribe();
 
-export const addSnackOrder = createAsyncThunk(
-  'sanck_orders/add_user_order',
-  async data => {
-    try {
-      const item = await addDoc(snackOrdersRef, data);
-      toast.success('Successfully created.');
-      return item;
-    } catch (error) {
-      console.log({ error });
-    }
+    onSubscribe(subscription, {
+      update: dd => console.log({ dd })
+    });
+
+    // try {
+    //   const res = await ordersQuery.find();
+    //   console.log({ res });
+    //   const items = getParseObjects(res);
+    //   console.log({ items });
+    //   return items;
+    // } catch (error) {
+    //   return rejectWithValue(error);
+    // }
   }
 );
 
 export const addUserSnackOrder = createAsyncThunk(
-  'sanck_orders/add_user_order',
+  'snackOrders/add_user_order',
   async ({ formData, category }, { getState }) => {
     const snackUsersOrderRef = collection(
       db,
@@ -67,22 +64,6 @@ export const addUserSnackOrder = createAsyncThunk(
         categories: arrayUnion(category)
       });
       toast.success('Successfully created.');
-      return item;
-    } catch (error) {
-      console.log({ error });
-    }
-  }
-);
-
-export const updateUserSnackOrder = createAsyncThunk(
-  'sanck_orders/update_user_order',
-  async ({ id, data }, { getState }) => {
-    const docRef = doc(
-      db,
-      `${getSnackUsersOrderRef(getState().snackOrders.snackOrder.id)}/${id}`
-    );
-    try {
-      const item = await updateDoc(docRef, data);
       return item;
     } catch (error) {
       console.log({ error });
@@ -143,7 +124,7 @@ export const updateSnackOrder = createAsyncThunk(
 );
 
 export const snackOrdersSlice = createSlice({
-  name: 'snackOrder',
+  name: 'snackOrders',
   initialState: {
     snackOrder: null,
     completedSnackOrders: [],
@@ -153,30 +134,8 @@ export const snackOrdersSlice = createSlice({
     loading: true
   },
   reducers: {
-    setLoadingTrue: state => {
-      state.loading = true;
-    },
-    setLoadingFalse: state => {
-      state.loading = false;
-    },
     snackOrdersFetched: (state, action) => {
       state.snackOrder = action.payload;
-      state.loading = false;
-    },
-    setCompletedSnackOrders: (state, action) => {
-      state.completedSnackOrders = action.payload;
-      state.loading = false;
-    },
-    setCurrentUserCompletedSnackOrders: (state, action) => {
-      state.currentUserCompletedSnackOrders = action.payload;
-      state.loading = false;
-    },
-    setUserOrders: (state, action) => {
-      state.userOrders = action.payload;
-      state.loading = false;
-    },
-    setCurrentUserOrders: (state, action) => {
-      state.currentUserOrders = action.payload;
       state.loading = false;
     }
   },
@@ -191,13 +150,13 @@ export const snackOrdersSlice = createSlice({
   }
 });
 
-export const {
-  setLoadingTrue,
-  snackOrdersFetched,
-  setUserOrders,
-  setCurrentUserOrders,
-  setCompletedSnackOrders,
-  setCurrentUserCompletedSnackOrders
-} = snackOrdersSlice.actions;
+// export const {
+//   setLoadingTrue,
+//   snackOrdersFetched,
+//   setUserOrders,
+//   setCurrentUserOrders,
+//   setCompletedSnackOrders,
+//   setCurrentUserCompletedSnackOrders
+// } = snackOrdersSlice.actions;
 
 export default snackOrdersSlice.reducer;

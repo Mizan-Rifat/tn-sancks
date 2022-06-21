@@ -4,15 +4,17 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from 'firebaseApp/firebase';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { signIn } from 'redux/slices/usersSlice';
 
 const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const { currentUser } = useSelector(state => state.users);
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -20,17 +22,18 @@ const Login = () => {
     formState: { errors }
   } = useForm();
 
-  const onSubmit = async ({ email, password }) => {
-    setLoading(true);
-    signInWithEmailAndPassword(auth, email, password)
-      .then(userCredential => {
-        const user = userCredential.user;
-        console.log({ user });
-      })
-      .catch(error => {
-        setLoading(false);
-        toast.error(error.message);
-      });
+  const onSubmit = async data => {
+    // setLoading(true);
+    dispatch(signIn(data));
+    // signInWithEmailAndPassword(auth, email, password)
+    //   .then(userCredential => {
+    //     const user = userCredential.user;
+    //     console.log({ user });
+    //   })
+    //   .catch(error => {
+    //     setLoading(false);
+    //     toast.error(error.message);
+    //   });
   };
 
   useEffect(() => {

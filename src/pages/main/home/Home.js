@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,27 +7,37 @@ import TableRow from '@mui/material/TableRow';
 import CancelIcon from '@mui/icons-material/Cancel';
 import IconButton from '@mui/material/IconButton';
 import { Box, Button } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AddItemDialog from './AddItemDialog';
-import useOrdersHook from 'hooks/useOrdersHooks';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import { fetchItems } from 'redux/slices/itemsSlice';
+import { fetchCurrentSnackOrders } from 'redux/slices/snackOrdersSlice';
 
 const getTotalPrice = items =>
   items.reduce((acc, val) => acc + Number(val.qty * val.price), 0);
 
 const Home = () => {
   const [open, setOpen] = useState();
-  const { currentUserOrders, snackOrder } = useSelector(
-    state => state.snackOrders
+  const { snackRequest, fetching, loading } = useSelector(
+    state => state.orderRequests
   );
+  const { items } = useSelector(state => state.items);
+  const { currentUser } = useSelector(state => state.users);
 
-  const { handleDeleteOrder } = useOrdersHook();
+  const dispatch = useDispatch();
 
-  return snackOrder ? (
+  useEffect(() => {
+    if (!items.length) {
+      dispatch(fetchItems());
+    }
+    dispatch(fetchCurrentSnackOrders());
+  }, []);
+
+  return snackRequest?.status ? (
     <>
       <TableContainer>
         <Table size="small">
-          <TableBody>
+          {/* <TableBody>
             {currentUserOrders.map(row => (
               <TableRow key={row.itemId}>
                 <TableCell>
@@ -52,16 +62,16 @@ const Home = () => {
               <TableCell>{getTotalPrice(currentUserOrders)} /-</TableCell>
               <TableCell></TableCell>
             </TableRow>
-          </TableBody>
+          </TableBody> */}
         </Table>
       </TableContainer>
       <Box sx={{ textAlign: 'center', my: 3 }}>
-        {!snackOrder.open && <h3>Order request is closed now.</h3>}
+        {!snackRequest.status && <h3>Order request is closed now.</h3>}
         <Button
           variant="contained"
           color="primary"
           onClick={() => setOpen(true)}
-          disabled={!snackOrder.open}
+          disabled={!snackRequest.open}
         >
           Add Item
         </Button>

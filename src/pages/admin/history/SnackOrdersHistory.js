@@ -10,7 +10,6 @@ import {
   TableRow
 } from '@mui/material';
 import AppBackdrop from 'components/backdrop/AppBackdrop';
-import useSnackOrdersHistory from 'hooks/useSnackOrderHistory';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { formatDate } from 'utils';
@@ -24,8 +23,6 @@ const SnackOrdersHistory = ({ self }) => {
   const { completedSnackOrders, loading, currentUserCompletedSnackOrders } =
     useSelector(state => state.snackOrders);
   const { currentUser } = useSelector(state => state.users);
-
-  useSnackOrdersHistory();
 
   useEffect(() => {
     self

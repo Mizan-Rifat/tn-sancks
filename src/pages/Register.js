@@ -5,14 +5,17 @@ import { addDoc, collection } from 'firebase/firestore';
 import { auth, db } from 'firebaseApp/firebase';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { signUp } from 'redux/slices/usersSlice';
+import Parse from 'parse';
 
 const Register = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const usersRef = collection(db, 'users');
   const { currentUser } = useSelector(state => state.users);
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -23,25 +26,12 @@ const Register = () => {
 
   const onSubmit = async data => {
     setLoading(true);
-
-    createUserWithEmailAndPassword(auth, data.email, data.password)
-      .then(userCredential => {
-        const user = userCredential.user;
-
-        addDoc(usersRef, {
-          name: data.username,
-          email: data.email,
-          uid: user.uid
-        }).then(() => {
-          setLoading(false);
-        });
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+    await dispatch(signUp(data)).unwrap();
+    navigate('/login');
   };
 
   useEffect(() => {
+    console.log(Parse.User.current());
     if (currentUser) {
       if (currentUser.role == 'admin') {
         navigate('/admin');
@@ -60,10 +50,10 @@ const Register = () => {
             <Stack spacing={2}>
               <TextField
                 fullWidth
-                label="Username"
-                error={!!errors.username}
-                helperText={errors.username?.message}
-                {...register('username', {
+                label="Name"
+                error={!!errors.name}
+                helperText={errors.name?.message}
+                {...register('name', {
                   required: 'This field is required'
                 })}
               />

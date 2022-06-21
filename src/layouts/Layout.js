@@ -7,12 +7,12 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { AccountCircle } from '@mui/icons-material';
 import { Menu, MenuItem } from '@mui/material';
-import { signOut } from 'firebase/auth';
-import { auth } from 'firebaseApp/firebase';
 import Sidebar from './Sidebar';
+import { useDispatch } from 'react-redux';
+import { signOut } from 'redux/slices/usersSlice';
 
 const drawerWidth = 240;
 
@@ -20,7 +20,8 @@ const Layout = props => {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -32,7 +33,8 @@ const Layout = props => {
     window !== undefined ? () => window().document.body : undefined;
 
   const handleLogout = async () => {
-    await signOut(auth);
+    await dispatch(signOut()).unwrap();
+    navigate('/login');
   };
 
   return (

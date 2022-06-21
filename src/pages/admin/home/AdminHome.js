@@ -1,5 +1,5 @@
 import { Box, Button } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -7,10 +7,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
-import useOrdersHook from 'hooks/useOrdersHooks';
 import AppBackdrop from 'components/backdrop/AppBackdrop';
 import { Navigate } from 'react-router-dom';
-import { addSnackOrder } from 'redux/slices/snackOrdersSlice';
+import { fetchOrderRequests } from 'redux/slices/orderRequestsSlice';
 
 const FormDialog = ({ open, setOpen }) => {
   const [date, setDate] = useState(dayjs().format('YYYY-MM-DD'));
@@ -21,9 +20,7 @@ const FormDialog = ({ open, setOpen }) => {
   };
 
   const handleSubmit = () => {
-    dispatch(
-      addSnackOrder({ date: dayjs(date).format(), status: true, open: true })
-    );
+    dispatch();
 
     setOpen(false);
   };
@@ -56,15 +53,21 @@ const FormDialog = ({ open, setOpen }) => {
 const AdminHome = () => {
   const [open, setOpen] = useState(false);
 
-  const { snackOrder, loading } = useSelector(state => state.snackOrders);
+  const { snackRequest, fetching, loading } = useSelector(
+    state => state.orderRequests
+  );
 
-  useOrdersHook();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchOrderRequests());
+  }, []);
 
   return (
-    !loading && (
+    !fetching && (
       <>
-        <AppBackdrop open={loading} />
-        {snackOrder ? (
+        <AppBackdrop open={fetching} />
+        {false ? (
           <Navigate to="orders" />
         ) : (
           <>
