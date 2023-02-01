@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/tn-snacks/static/css/main.9e06cd67.css",
-    "main.js": "/tn-snacks/static/js/main.eed423bd.js",
-    "service-worker.js": "/tn-snacks/service-worker.js",
-    "index.html": "/tn-snacks/index.html",
-    "main.9e06cd67.css.map": "/tn-snacks/static/css/main.9e06cd67.css.map",
-    "main.eed423bd.js.map": "/tn-snacks/static/js/main.eed423bd.js.map"
+    "main.css": "/tn-sancks/static/css/main.9e06cd67.css",
+    "main.js": "/tn-sancks/static/js/main.7261cecb.js",
+    "service-worker.js": "/tn-sancks/service-worker.js",
+    "index.html": "/tn-sancks/index.html",
+    "main.9e06cd67.css.map": "/tn-sancks/static/css/main.9e06cd67.css.map",
+    "main.7261cecb.js.map": "/tn-sancks/static/js/main.7261cecb.js.map"
   },
   "entrypoints": [
     "static/css/main.9e06cd67.css",
-    "static/js/main.eed423bd.js"
+    "static/js/main.7261cecb.js"
   ]
 }
