@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/tn-sancks/static/css/main.9e06cd67.css",
-    "main.js": "/tn-sancks/static/js/main.8b0a91c1.js",
-    "service-worker.js": "/tn-sancks/service-worker.js",
-    "index.html": "/tn-sancks/index.html",
-    "main.9e06cd67.css.map": "/tn-sancks/static/css/main.9e06cd67.css.map",
-    "main.8b0a91c1.js.map": "/tn-sancks/static/js/main.8b0a91c1.js.map"
+    "main.css": "/tn-snacks/static/css/main.9e06cd67.css",
+    "main.js": "/tn-snacks/static/js/main.e44c9c3d.js",
+    "service-worker.js": "/tn-snacks/service-worker.js",
+    "index.html": "/tn-snacks/index.html",
+    "main.9e06cd67.css.map": "/tn-snacks/static/css/main.9e06cd67.css.map",
+    "main.e44c9c3d.js.map": "/tn-snacks/static/js/main.e44c9c3d.js.map"
   },
   "entrypoints": [
     "static/css/main.9e06cd67.css",
-    "static/js/main.8b0a91c1.js"
+    "static/js/main.e44c9c3d.js"
   ]
 }
