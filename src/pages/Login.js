@@ -7,10 +7,12 @@ import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import ForgotPassword from './ForgotPassword';
 
 const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [openForgotPasswordModal, setOpenForgotPasswordModal] = useState(false);
 
   const { currentUser } = useSelector(state => state.users);
 
@@ -79,8 +81,21 @@ const Login = () => {
           >
             Register
           </Button>
+          <Box sx={{ mt: 1, textAlign: 'center' }}>
+            <Button
+              type="submit"
+              variant="text"
+              onClick={() => setOpenForgotPasswordModal(true)}
+            >
+              Forgot Password?
+            </Button>
+          </Box>
         </Box>
       )}
+      <ForgotPassword
+        open={openForgotPasswordModal}
+        handleClose={() => setOpenForgotPasswordModal(false)}
+      />
     </>
   );
 };
