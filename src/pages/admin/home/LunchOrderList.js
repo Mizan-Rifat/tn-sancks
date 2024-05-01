@@ -51,7 +51,7 @@ const LunchOrderList = () => {
           return {
             date: lunchOrder?.date,
             userName: user.name,
-            price: 90,
+            price: 100,
             userId: item
           };
         });
