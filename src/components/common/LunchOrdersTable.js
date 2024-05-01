@@ -63,7 +63,7 @@ const LunchOrdersTable = ({ self }) => {
               <TableCell>{index + 1}</TableCell>
               <TableCell>{row.user}</TableCell>
               <TableCell>{row.item}</TableCell>
-              <TableCell align="center">90/-</TableCell>
+              <TableCell align="center">100/-</TableCell>
             </TableRow>
           ))}
 
@@ -85,7 +85,7 @@ const LunchOrdersTable = ({ self }) => {
                   <TableCell>{row}</TableCell>
                   <TableCell align="center">{totalOrders[row]}</TableCell>
                   <TableCell align="center">
-                    {Number(totalOrders[row]) * 90} /-
+                    {Number(totalOrders[row]) * 100} /-
                   </TableCell>
                 </TableRow>
               ))}
@@ -105,7 +105,7 @@ const LunchOrdersTable = ({ self }) => {
                   align="center"
                   sx={{ borderBottom: 'none', fontWeight: 600 }}
                 >
-                  {Number(orders?.length || 0) * 90} /-
+                  {Number(orders?.length || 0) * 100} /-
                 </TableCell>
               </TableRow>
             </>
