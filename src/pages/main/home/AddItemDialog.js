@@ -48,7 +48,10 @@ const AddItemDialog = ({ open, setOpen }) => {
       0
     );
 
-    if (spent + parseInt(selectedItem.price) * parseInt(qty) > credit) {
+    if (
+      spent + parseInt(selectedItem.price) * parseInt(qty) >
+      parseInt(credit)
+    ) {
       toast.error("You don't have enough credit");
     } else {
       dispatch(
@@ -78,7 +81,7 @@ const AddItemDialog = ({ open, setOpen }) => {
 
   useEffect(() => {
     setCredit(
-      currentUser.deposit -
+      (currentUser.deposit || 0) -
         getDebit(currentUser.id, currentUserCompletedSnackOrders)
     );
   }, [currentUserCompletedSnackOrders]);
